@@ -1,8 +1,8 @@
 {
   "name": "guru",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "First backend project",
+  "author": "Dhruva Kumar",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
