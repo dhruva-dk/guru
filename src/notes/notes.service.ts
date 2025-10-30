@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
+import { Note } from './entities/note.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NotesService {
-  create(createNoteDto: CreateNoteDto) {
-    return 'This action adds a new note';
+  constructor(
+    @InjectRepository(Note)
+    private notesRepository: Repository<Note>,
+  ) {}
+
+  async create(createNoteDto: CreateNoteDto): Promise<Note> {
+    const note = new Note();
+    note.content = createNoteDto.content;
+
+    return this.notesRepository.save(note);
   }
 
-  findAll() {
-    return `This action returns all notes`;
+  async findAll(): Promise<Note[]> {
+    return this.notesRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} note`;
+  async findOne(id: number): Promise<Note> {
+    const note = await this.notesRepository.findOneBy({ id });
+
+    if (!note) {
+      throw new NotFoundException('Note with id ' + id + ' does not exist');
+    }
+
+    return note;
   }
 
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
+  async update(id: number, updateNoteDto: UpdateNoteDto): Promise<Note> {
+    const note = await this.notesRepository.findOneByOrFail({ id: id });
+
+    if (!note) {
+      throw new NotFoundException('Note with id ' + id + ' does not exist');
+    }
+
+    // Only update note if content is not undefined.
+    if (updateNoteDto.content !== undefined) {
+      note.content = updateNoteDto.content;
+    }
+
+    return this.notesRepository.save(note);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} note`;
+  async remove(id: number): Promise<void> {
+    await this.notesRepository.delete(id);
   }
 }

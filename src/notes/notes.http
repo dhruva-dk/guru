@@ -1,0 +1,17 @@
+@host = http://localhost:3000
+
+### 1. SETUP: Create a note to be patched
+# @name createForPatch
+POST {{host}}/notes
+Content-Type: application/json
+
+{
+  "content": "Note 4"
+}
+
+> {%
+  client.global.set("patch_note_id", response.body.id);
+%}
+
+### 3. TEST: get all notes
+GET {{host}}/notes
