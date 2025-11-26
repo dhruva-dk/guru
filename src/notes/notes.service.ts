@@ -16,6 +16,7 @@ export class NotesService {
     const note = new Note();
     note.content = createNoteDto.content;
 
+    // Created and updated dates are handled by TypeORM decorators.
     return this.notesRepository.save(note);
   }
 

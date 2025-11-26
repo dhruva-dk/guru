@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from '@nestjs/common';
@@ -18,31 +19,31 @@ export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Post()
-  create(@Body() createNoteDto: CreateNoteDto): Promise<Note> {
-    return this.notesService.create(createNoteDto);
+  async create(@Body() createNoteDto: CreateNoteDto): Promise<Note> {
+    return await this.notesService.create(createNoteDto);
   }
 
   @Get()
-  findAll(): Promise<Note[]> {
-    return this.notesService.findAll();
+  async findAll(): Promise<Note[]> {
+    return await this.notesService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Note> {
-    return this.notesService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Note> {
+    return await this.notesService.findOne(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
+  async update(
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateNoteDto: UpdateNoteDto,
   ): Promise<Note> {
-    return this.notesService.update(+id, updateNoteDto);
+    return await this.notesService.update(+id, updateNoteDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.notesService.remove(+id);
   }
 }
