@@ -25,6 +25,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     done: VerifyCallback,
   ): Promise<any> {
     console.log(profile);
-    // todo: implement user retrieval/creation/authorizatoin with db and jwt
+    const { id, emails } = profile;
+    const user = {
+      googleId: id,
+      provider: 'google',
+      email: emails[0].value,
+    };
+
+    // Attaches user to req.user (use in controller which has the google guard applied, and thus uses this strategy)
+    done(null, user);
   }
 }

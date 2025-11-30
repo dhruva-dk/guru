@@ -14,13 +14,17 @@ export class Note {
   @Expose()
   id: number;
 
+  @Expose()
   @CreateDateColumn()
   createdAt: Date;
 
+  @Expose()
   @UpdateDateColumn()
   updatedAt: Date;
 
   @Column()
   @Expose()
   content: string;
+
+  // todo: add relation to user entity
 }
